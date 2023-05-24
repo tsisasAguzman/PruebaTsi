@@ -1,0 +1,1923 @@
+*       *********************************************************
+*       *                                                         
+*       * 2004/12/14             MENUR.MPR              17:50:29  
+*       *                                                         
+*       *********************************************************
+*       *                                                         
+*       * Nombre del autor                                        
+*       *                                                         
+*       * Copyright (C) 2004 Nombre de compañía                   
+*       * Dirección                                               
+*       * Ciudad,     Código pos                                  
+*       * País                                              
+*       *                                                         
+*       * Descripción:                                            
+*       * Este PROGRAMA lo ha generado automáticamente GENMENU.    
+*       *                                                         
+*       *********************************************************
+
+
+*       *********************************************************
+*       *                                                         
+*       *                     Establecer código                   
+*       *                                                         
+*       *********************************************************
+*
+
+*public Var_Ini_Captura, Var_Cont_Captura, Var_Lectura, Var_Cuadre, Var_Capt_Comp, Var_Rela_fact, Var_act_cc, var_cent_dest, var_modal_retef, var_cc_suc, Wlot, Can_Imp_chq
+*Can_Imp_chq=0
+
+
+
+*       *********************************************************
+*       *                                                         
+*       *                    Definición de menú                   
+*       *                                                         
+*       *********************************************************
+*
+
+SET SYSMENU TO
+SET SYSMENU AUTOMATIC
+
+DEFINE PAD _1eh128njv OF _MSYSMENU PROMPT "\<Archivo" COLOR SCHEME 3 ;
+	KEY ALT+A, "" ;
+	SKIP FOR _screen.formcount > 0 or  !nvl_usuario(1)  
+DEFINE PAD _1eh128njw OF _MSYSMENU PROMPT "\<Captura" COLOR SCHEME 3 ;
+	KEY ALT+C, "" ;
+	SKIP FOR _screen.formcount > 0 or !nvl_usuario(2) 
+DEFINE PAD _1eh128njx OF _MSYSMENU PROMPT "\<Movimiento" COLOR SCHEME 3 ;
+	KEY ALT+M, "" ;
+	SKIP FOR _screen.formcount > 0 or !nvl_usuario(3) 
+DEFINE PAD _1eh128njy OF _MSYSMENU PROMPT "\<Reportes" COLOR SCHEME 3 ;
+	KEY ALT+R, "" ;
+	SKIP FOR _screen.formcount > 0 or !nvl_usuario(4) 
+DEFINE PAD _1eh128njz OF _MSYSMENU PROMPT "\<Actualizaciones" COLOR SCHEME 3 ;
+	KEY ALT+A, "" ;
+	SKIP FOR _screen.formcount > 0 or !nvl_usuario(5) 
+DEFINE PAD _1eh128nk0 OF _MSYSMENU PROMPT "\<Utilitarios" COLOR SCHEME 3 ;
+	KEY ALT+U, "" ;
+	SKIP FOR _screen.formcount > 0 or !nvl_usuario(6) 
+DEFINE PAD _1eh128nk1 OF _MSYSMENU PROMPT "U\<suarios" COLOR SCHEME 3 ;
+	KEY ALT+S, "" ;
+	SKIP FOR _screen.formcount > 0 or !nvl_usuario(7) 
+DEFINE PAD _1eh128nk2 OF _MSYSMENU PROMPT "\<Salir" COLOR SCHEME 3 ;
+	KEY ALT+S, "" ;
+	SKIP FOR _screen.formcount > 0 
+ON PAD _1eh128njv OF _MSYSMENU ACTIVATE POPUP archivos
+ON PAD _1eh128njw OF _MSYSMENU ACTIVATE POPUP capturas
+ON PAD _1eh128njx OF _MSYSMENU ACTIVATE POPUP movimiento
+ON PAD _1eh128njy OF _MSYSMENU ACTIVATE POPUP reportes
+ON PAD _1eh128njz OF _MSYSMENU ACTIVATE POPUP actualizac
+ON PAD _1eh128nk0 OF _MSYSMENU ACTIVATE POPUP utilitario
+ON PAD _1eh128nk1 OF _MSYSMENU ACTIVATE POPUP usuarios
+ON SELECTION PAD _1eh128nk2 OF _MSYSMENU ;
+	DO _1eh128nk3 ;
+	IN LOCFILE("E:\DESARROLLOS\AGN\PAGADURIA\MENUS\MENUR" ,"MPX;MPR|FXP;PRG" ,"DÓNDE está MENUR?")
+
+DEFINE POPUP archivos MARGIN RELATIVE SHADOW COLOR SCHEME 4
+DEFINE BAR 1 OF archivos PROMPT "\<Generar Diskettes" ;
+	SKIP FOR !nvl_archivo(1)
+DEFINE BAR 2 OF archivos PROMPT "\<Leer Diskettes" ;
+	SKIP FOR !nvl_archivo(2)
+DEFINE BAR 3 OF archivos PROMPT "\-"
+DEFINE BAR 4 OF archivos PROMPT "Cargar Cuentas-Centro" ;
+	SKIP FOR !nvl_archivo(3)
+DEFINE BAR 5 OF archivos PROMPT "\-"
+DEFINE BAR 6 OF archivos PROMPT "Generar Gravament \<Movimiento Financiero (GMF) - Semanal" ;
+	SKIP FOR !nvl_archivo(4)
+ON SELECTION BAR 1 OF archivos do form gen_diskettes
+ON SELECTION BAR 2 OF archivos do form lee_diskettes
+ON SELECTION BAR 4 OF archivos do lee_cucen
+ON SELECTION BAR 6 OF archivos do pr_semana
+
+DEFINE POPUP capturas MARGIN RELATIVE SHADOW COLOR SCHEME 4
+DEFINE BAR 1 OF capturas PROMPT "\<Cheques de Gerencia" ;
+	SKIP FOR !nvl_captura(1)
+DEFINE BAR 2 OF capturas PROMPT "\<Abono Cta Corriente" ;
+	SKIP FOR !nvl_captura(2)
+DEFINE BAR 3 OF capturas PROMPT "\<Orden de Fax" ;
+	SKIP FOR !nvl_captura(3) 
+ON BAR 1 OF capturas ACTIVATE POPUP chequesdeg
+ON BAR 2 OF capturas ACTIVATE POPUP abonoctaco
+ON BAR 3 OF capturas ACTIVATE POPUP ordendefax
+
+DEFINE POPUP chequesdeg MARGIN RELATIVE SHADOW COLOR SCHEME 4
+DEFINE BAR 1 OF chequesdeg PROMPT "\<Captura Cheques de Gerencia"
+DEFINE BAR 2 OF chequesdeg PROMPT "\<Modificación Cheques de Gerencia"
+ON SELECTION BAR 1 OF chequesdeg do form fm_cheques
+ON SELECTION BAR 2 OF chequesdeg ;
+	DO _1eh128nk4 ;
+	IN LOCFILE("E:\DESARROLLOS\AGN\PAGADURIA\MENUS\MENUR" ,"MPX;MPR|FXP;PRG" ,"DÓNDE está MENUR?")
+
+DEFINE POPUP abonoctaco MARGIN RELATIVE SHADOW COLOR SCHEME 4
+DEFINE BAR 1 OF abonoctaco PROMPT "\<Captura Abono Cta Corriente"
+DEFINE BAR 2 OF abonoctaco PROMPT "\<Modificación Abono Cta Corriente"
+ON SELECTION BAR 1 OF abonoctaco do form fm_abonos
+ON SELECTION BAR 2 OF abonoctaco ;
+	DO _1eh128nk5 ;
+	IN LOCFILE("E:\DESARROLLOS\AGN\PAGADURIA\MENUS\MENUR" ,"MPX;MPR|FXP;PRG" ,"DÓNDE está MENUR?")
+
+DEFINE POPUP ordendefax MARGIN RELATIVE SHADOW COLOR SCHEME 4
+DEFINE BAR 1 OF ordendefax PROMPT "\<Captura Orden de Fax"
+DEFINE BAR 2 OF ordendefax PROMPT "\<Modificación Orden de Fax"
+ON SELECTION BAR 1 OF ordendefax do form fm_fax
+ON SELECTION BAR 2 OF ordendefax ;
+	DO _1eh128nk6 ;
+	IN LOCFILE("E:\DESARROLLOS\AGN\PAGADURIA\MENUS\MENUR" ,"MPX;MPR|FXP;PRG" ,"DÓNDE está MENUR?")
+
+DEFINE POPUP movimiento MARGIN RELATIVE SHADOW COLOR SCHEME 4
+DEFINE BAR 1 OF movimiento PROMPT "\<Lectura" ;
+	SKIP FOR !nvl_movimiento(1)
+DEFINE BAR 2 OF movimiento PROMPT "\<Cuadre de Movimiento" ;
+	SKIP FOR !nvl_movimiento(2)
+ON BAR 1 OF movimiento ACTIVATE POPUP lectura
+ON SELECTION BAR 2 OF movimiento do cuadre_mvto
+
+DEFINE POPUP lectura MARGIN RELATIVE SHADOW COLOR SCHEME 4
+DEFINE BAR 1 OF lectura PROMPT "Lectura \<Consolidada"
+DEFINE BAR 2 OF lectura PROMPT "Lectura por \<Usuarios"
+ON SELECTION BAR 1 OF lectura do Lectura
+ON SELECTION BAR 2 OF lectura do form fm_lectura
+
+DEFINE POPUP reportes MARGIN RELATIVE SHADOW COLOR SCHEME 4
+DEFINE BAR 1 OF reportes PROMPT "\<Comprobantes M.S.A." ;
+	SKIP FOR !nvl_reporte(1) or !lcomprobante
+DEFINE BAR 2 OF reportes PROMPT "\<Sucursales y Agencias" ;
+	SKIP FOR !nvl_reporte(2) or !lsucursal
+DEFINE BAR 3 OF reportes PROMPT "\<Relación Cheques de Gerencia" ;
+	SKIP FOR !nvl_reporte(3) or  !lgerencia
+DEFINE BAR 4 OF reportes PROMPT "C\<heques de Gerencia 2000" ;
+	SKIP FOR !nvl_reporte(4) or  !l2000
+DEFINE BAR 5 OF reportes PROMPT "\<Orden de Pago - Fax" ;
+	SKIP FOR !nvl_reporte(7) or !lpagoFax
+DEFINE BAR 6 OF reportes PROMPT "Regis\<tro control de Cheques" ;
+	SKIP FOR !nvl_reporte(8) or !lctrlcheques
+DEFINE BAR 7 OF reportes PROMPT "Re\<gistro control Cta Cte y Fax" ;
+	SKIP FOR !nvl_reporte(9) or !lctafax
+DEFINE BAR 8 OF reportes PROMPT "Re\<lación de pagos" ;
+	SKIP FOR !nvl_reporte(11) or !lpagos
+DEFINE BAR 9 OF reportes PROMPT "\<Proveedores" ;
+	SKIP FOR !nvl_reporte(13) or !lproveed
+DEFINE BAR 10 OF reportes PROMPT "Generación Hoja de Rut\<a" ;
+	SKIP FOR !nvl_reporte(14) or !lhoja
+DEFINE BAR 11 OF reportes PROMPT "\-"
+DEFINE BAR 12 OF reportes PROMPT "\<Notas credito" ;
+	SKIP FOR !nvl_reporte(15) or !lnotas
+DEFINE BAR 13 OF reportes PROMPT "Tri\<butaria" ;
+	SKIP FOR !nvl_reporte(16) or !ltribu
+DEFINE BAR 14 OF reportes PROMPT "Lista\<do de Envíos Fa\<x" ;
+	SKIP FOR !nvl_reporte(17) or !llistado
+DEFINE BAR 15 OF reportes PROMPT "Relación de Pagos por Ciu\<dad" ;
+	SKIP FOR !nvl_reporte(18) or !lciudad
+DEFINE BAR 16 OF reportes PROMPT "\-"
+DEFINE BAR 17 OF reportes PROMPT "Reporte de Documentos DIAN" ;
+	SKIP FOR !nvl_reporte(19) or  !Lrdian
+ON SELECTION BAR 1 OF reportes do comp_msa
+ON BAR 2 OF reportes ACTIVATE POPUP suc_agenc
+ON SELECTION BAR 3 OF reportes do rela_cheques
+ON BAR 4 OF reportes ACTIVATE POPUP _1am0x6a3y
+ON BAR 5 OF reportes ACTIVATE POPUP ordendepag
+ON SELECTION BAR 6 OF reportes ;
+	DO _1eh128nk7 ;
+	IN LOCFILE("E:\DESARROLLOS\AGN\PAGADURIA\MENUS\MENUR" ,"MPX;MPR|FXP;PRG" ,"DÓNDE está MENUR?")
+ON BAR 7 OF reportes ACTIVATE POPUP registroco
+ON SELECTION BAR 8 OF reportes ;
+	DO _1eh128nk8 ;
+	IN LOCFILE("E:\DESARROLLOS\AGN\PAGADURIA\MENUS\MENUR" ,"MPX;MPR|FXP;PRG" ,"DÓNDE está MENUR?")
+ON SELECTION BAR 9 OF reportes ;
+	DO _1eh128nk9 ;
+	IN LOCFILE("E:\DESARROLLOS\AGN\PAGADURIA\MENUS\MENUR" ,"MPX;MPR|FXP;PRG" ,"DÓNDE está MENUR?")
+ON BAR 10 OF reportes ACTIVATE POPUP generación
+ON BAR 12 OF reportes ACTIVATE POPUP notascredi
+ON BAR 13 OF reportes ACTIVATE POPUP tributaria
+ON SELECTION BAR 14 OF reportes ;
+	DO _1eh128nka ;
+	IN LOCFILE("E:\DESARROLLOS\AGN\PAGADURIA\MENUS\MENUR" ,"MPX;MPR|FXP;PRG" ,"DÓNDE está MENUR?")
+ON SELECTION BAR 15 OF reportes ;
+	DO _1eh128nkb ;
+	IN LOCFILE("E:\DESARROLLOS\AGN\PAGADURIA\MENUS\MENUR" ,"MPX;MPR|FXP;PRG" ,"DÓNDE está MENUR?")
+ON SELECTION BAR 17 OF reportes do pr_dian
+
+DEFINE POPUP suc_agenc MARGIN RELATIVE SHADOW COLOR SCHEME 4
+DEFINE BAR 1 OF suc_agenc PROMPT "\<Relación de Comprobantes"
+DEFINE BAR 2 OF suc_agenc PROMPT "\<Impresión de Comprobantes"
+DEFINE BAR 3 OF suc_agenc PROMPT "\<Hoja de Ruta"
+ON SELECTION BAR 1 OF suc_agenc do rela_comp
+ON SELECTION BAR 2 OF suc_agenc do impr_comp
+ON SELECTION BAR 3 OF suc_agenc do hoja_ruta
+
+DEFINE POPUP _1am0x6a3y MARGIN RELATIVE SHADOW COLOR SCHEME 4
+DEFINE BAR 1 OF _1am0x6a3y PROMPT "Impresión de Cheques"
+DEFINE BAR 2 OF _1am0x6a3y PROMPT "Impresión de Cheques con Nueva Papelería"
+ON SELECTION BAR 1 OF _1am0x6a3y do form f_clave with "H"
+ON SELECTION BAR 2 OF _1am0x6a3y do form f_clave with "N"
+
+DEFINE POPUP ordendepag MARGIN RELATIVE SHADOW COLOR SCHEME 4
+DEFINE BAR 1 OF ordendepag PROMPT "Ordenado por \<Cédula/Nit"
+DEFINE BAR 2 OF ordendepag PROMPT "\<Ordenado por Captura"
+ON SELECTION BAR 1 OF ordendepag ;
+	DO _1eh128nkc ;
+	IN LOCFILE("E:\DESARROLLOS\AGN\PAGADURIA\MENUS\MENUR" ,"MPX;MPR|FXP;PRG" ,"DÓNDE está MENUR?")
+ON SELECTION BAR 2 OF ordendepag ;
+	DO _1eh128nkd ;
+	IN LOCFILE("E:\DESARROLLOS\AGN\PAGADURIA\MENUS\MENUR" ,"MPX;MPR|FXP;PRG" ,"DÓNDE está MENUR?")
+
+DEFINE POPUP registroco MARGIN RELATIVE SHADOW COLOR SCHEME 4
+DEFINE BAR 1 OF registroco PROMPT "Ordenado por \<Cédula/Nit"
+DEFINE BAR 2 OF registroco PROMPT "\<Ordenado por Captura"
+ON SELECTION BAR 1 OF registroco ;
+	DO _1eh128nke ;
+	IN LOCFILE("E:\DESARROLLOS\AGN\PAGADURIA\MENUS\MENUR" ,"MPX;MPR|FXP;PRG" ,"DÓNDE está MENUR?")
+ON SELECTION BAR 2 OF registroco ;
+	DO _1eh128nkf ;
+	IN LOCFILE("E:\DESARROLLOS\AGN\PAGADURIA\MENUS\MENUR" ,"MPX;MPR|FXP;PRG" ,"DÓNDE está MENUR?")
+
+DEFINE POPUP generación MARGIN RELATIVE SHADOW COLOR SCHEME 4
+DEFINE BAR 1 OF generación PROMPT "Hoja de Ruta \<Cuenta Corriente"
+DEFINE BAR 2 OF generación PROMPT "Hoja de Ruta \<Ahorro"
+ON SELECTION BAR 1 OF generación ;
+	DO _1eh128nkg ;
+	IN LOCFILE("E:\DESARROLLOS\AGN\PAGADURIA\MENUS\MENUR" ,"MPX;MPR|FXP;PRG" ,"DÓNDE está MENUR?")
+ON SELECTION BAR 2 OF generación ;
+	DO _1eh128nkh ;
+	IN LOCFILE("E:\DESARROLLOS\AGN\PAGADURIA\MENUS\MENUR" ,"MPX;MPR|FXP;PRG" ,"DÓNDE está MENUR?")
+
+DEFINE POPUP notascredi MARGIN RELATIVE SHADOW COLOR SCHEME 4
+DEFINE BAR 1 OF notascredi PROMPT "Listado por Ced/Nit"
+DEFINE BAR 2 OF notascredi PROMPT "Listado por Orden de Captura"
+DEFINE BAR 3 OF notascredi PROMPT "\-"
+DEFINE BAR 4 OF notascredi PROMPT "Lectura Cuentas Corrientes y Ahorros" ;
+	SKIP FOR !LCTCTE
+ON SELECTION BAR 1 OF notascredi ;
+	DO _1eh128nki ;
+	IN LOCFILE("E:\DESARROLLOS\AGN\PAGADURIA\MENUS\MENUR" ,"MPX;MPR|FXP;PRG" ,"DÓNDE está MENUR?")
+ON SELECTION BAR 2 OF notascredi ;
+	DO _1eh128nkj ;
+	IN LOCFILE("E:\DESARROLLOS\AGN\PAGADURIA\MENUS\MENUR" ,"MPX;MPR|FXP;PRG" ,"DÓNDE está MENUR?")
+ON BAR 4 OF notascredi ACTIVATE POPUP lecturacue
+
+DEFINE POPUP lecturacue MARGIN RELATIVE SHADOW COLOR SCHEME 4
+DEFINE BAR 1 OF lecturacue PROMPT "\<Generar Archivo a transmitir"
+DEFINE BAR 2 OF lecturacue PROMPT "\<Enviar Archivo a Host"
+DEFINE BAR 3 OF lecturacue PROMPT "\<Parámetros de transmisión FTP"
+ON SELECTION BAR 1 OF lecturacue do p_transnotas
+ON SELECTION BAR 2 OF lecturacue do form fm_fechadia
+ON SELECTION BAR 3 OF lecturacue do form fm_servidor
+
+DEFINE POPUP tributaria MARGIN RELATIVE SHADOW COLOR SCHEME 4
+DEFINE BAR 1 OF tributaria PROMPT "ICA"
+DEFINE BAR 2 OF tributaria PROMPT "Retefuente"
+DEFINE BAR 3 OF tributaria PROMPT "\-"
+DEFINE BAR 4 OF tributaria PROMPT "Pagos a Terceros"
+DEFINE BAR 5 OF tributaria PROMPT "\<Archivo Detallado para Tributaria"
+DEFINE BAR 6 OF tributaria PROMPT "Archivo de \<Facturas"
+DEFINE BAR 7 OF tributaria PROMPT "\-"
+DEFINE BAR 8 OF tributaria PROMPT "Retenciones del Mes Anterior"
+ON SELECTION BAR 1 OF tributaria do form f_fecha with "2"
+ON SELECTION BAR 2 OF tributaria do form f_fecha with "1"
+ON BAR 4 OF tributaria ACTIVATE POPUP pagosaterc
+ON SELECTION BAR 5 OF tributaria do form fm_transmision
+ON SELECTION BAR 6 OF tributaria do form fm_facturas
+ON SELECTION BAR 8 OF tributaria do pr_retenciones
+
+DEFINE POPUP pagosaterc MARGIN RELATIVE SHADOW COLOR SCHEME 4
+DEFINE BAR 1 OF pagosaterc PROMPT "Archivo Cuentas 5, 1920, 18"
+DEFINE BAR 2 OF pagosaterc PROMPT "Archivo Cuentas 28"
+ON SELECTION BAR 1 OF pagosaterc do form f_fecha with "3"
+ON SELECTION BAR 2 OF pagosaterc do form f_fecha with "4"
+
+DEFINE POPUP actualizac MARGIN RELATIVE SHADOW COLOR SCHEME 4
+DEFINE BAR 1 OF actualizac PROMPT "\<Mantenimientos" ;
+	SKIP FOR !nvl_actualiza(1)
+DEFINE BAR 2 OF actualizac PROMPT "\-"
+DEFINE BAR 3 OF actualizac PROMPT "Tablas" ;
+	SKIP FOR !nvl_actualiza(3)
+DEFINE BAR 4 OF actualizac PROMPT "\-"
+DEFINE BAR 5 OF actualizac PROMPT "Modulo de Fax" ;
+	SKIP FOR !nvl_actualiza(4)
+DEFINE BAR 6 OF actualizac PROMPT "\-"
+DEFINE BAR 7 OF actualizac PROMPT "Limpiar tabla de movimientos" ;
+	SKIP FOR !nvl_actualiza(5)
+DEFINE BAR 8 OF actualizac PROMPT "Limpiar historico de impuestos" ;
+	SKIP FOR !nvl_actualiza(6)
+ON SELECTION BAR 1 OF actualizac do form mantenimiento
+ON BAR 3 OF actualizac ACTIVATE POPUP tablas
+ON BAR 5 OF actualizac ACTIVATE POPUP nuevoeleme
+ON SELECTION BAR 7 OF actualizac ;
+	DO _1eh128nkk ;
+	IN LOCFILE("E:\DESARROLLOS\AGN\PAGADURIA\MENUS\MENUR" ,"MPX;MPR|FXP;PRG" ,"DÓNDE está MENUR?")
+ON SELECTION BAR 8 OF actualizac ;
+	DO _1eh128nkl ;
+	IN LOCFILE("E:\DESARROLLOS\AGN\PAGADURIA\MENUS\MENUR" ,"MPX;MPR|FXP;PRG" ,"DÓNDE está MENUR?")
+
+DEFINE POPUP tablas MARGIN RELATIVE SHADOW COLOR SCHEME 4
+DEFINE BAR 1 OF tablas PROMPT "Observaciones"
+DEFINE BAR 2 OF tablas PROMPT "Oficinas"
+DEFINE BAR 3 OF tablas PROMPT "Parámetros IVA"
+DEFINE BAR 4 OF tablas PROMPT "Parámetros RETEIVA"
+DEFINE BAR 5 OF tablas PROMPT "Parámetros FOGAFIN"
+DEFINE BAR 6 OF tablas PROMPT "\<Lista Clinton"
+DEFINE BAR 7 OF tablas PROMPT "\<Parámetros de transmisión FTP"
+DEFINE BAR 8 OF tablas PROMPT "Direcciones de Correo"
+ON SELECTION BAR 1 OF tablas do form observa
+ON SELECTION BAR 2 OF tablas do form f_ofipagos
+ON SELECTION BAR 3 OF tablas do form fm_iva
+ON SELECTION BAR 4 OF tablas do form fm_reteiva
+ON SELECTION BAR 5 OF tablas do form fm_fogafin
+ON BAR 6 OF tablas ACTIVATE POPUP listaclint
+ON SELECTION BAR 7 OF tablas do form fm_servidor
+ON SELECTION BAR 8 OF tablas do form fm_direcciones
+
+DEFINE POPUP listaclint MARGIN RELATIVE SHADOW COLOR SCHEME 4
+DEFINE BAR 1 OF listaclint PROMPT "\<Importar desde Archivo"
+DEFINE BAR 2 OF listaclint PROMPT "\<Mantenimiento Lista Clinton"
+ON SELECTION BAR 1 OF listaclint ;
+	DO _1eh128nkm ;
+	IN LOCFILE("E:\DESARROLLOS\AGN\PAGADURIA\MENUS\MENUR" ,"MPX;MPR|FXP;PRG" ,"DÓNDE está MENUR?")
+ON SELECTION BAR 2 OF listaclint do form fm_clinton
+
+DEFINE POPUP nuevoeleme MARGIN RELATIVE SHADOW COLOR SCHEME 4
+DEFINE BAR 1 OF nuevoeleme PROMPT "Enviar" ;
+	SKIP FOR Lfax91
+DEFINE BAR 2 OF nuevoeleme PROMPT "Recibir"
+ON BAR 1 OF nuevoeleme ACTIVATE POPUP enviar
+ON SELECTION BAR 2 OF nuevoeleme ;
+	DO _1eh128nkn ;
+	IN LOCFILE("E:\DESARROLLOS\AGN\PAGADURIA\MENUS\MENUR" ,"MPX;MPR|FXP;PRG" ,"DÓNDE está MENUR?")
+
+DEFINE POPUP enviar MARGIN RELATIVE SHADOW COLOR SCHEME 4
+DEFINE BAR 1 OF enviar PROMPT "\<Generar Archivos Modufax"
+DEFINE BAR 2 OF enviar PROMPT "\<Agregar Centros Modufax"
+DEFINE BAR 3 OF enviar PROMPT "\-"
+DEFINE BAR 4 OF enviar PROMPT "Enviar Archivos por \<Correo"
+ON SELECTION BAR 1 OF enviar ;
+	DO _1eh128nko ;
+	IN LOCFILE("E:\DESARROLLOS\AGN\PAGADURIA\MENUS\MENUR" ,"MPX;MPR|FXP;PRG" ,"DÓNDE está MENUR?")
+ON SELECTION BAR 2 OF enviar do form fm_ciudad
+ON SELECTION BAR 4 OF enviar do pr_correo
+
+DEFINE POPUP utilitario MARGIN RELATIVE SHADOW COLOR SCHEME 4
+DEFINE BAR 1 OF utilitario PROMPT "Parametros \<Generales" ;
+	SKIP FOR !nvl_utilitario(1)
+DEFINE BAR 2 OF utilitario PROMPT "\<Parámetros Cheques de Gerencia" ;
+	SKIP FOR !nvl_utilitario(2)
+DEFINE BAR 3 OF utilitario PROMPT "\-"
+DEFINE BAR 4 OF utilitario PROMPT "\<Reindexar Tablas" ;
+	SKIP FOR !nvl_utilitario(5)
+DEFINE BAR 5 OF utilitario PROMPT "Compactar \<Tablas" ;
+	SKIP FOR !nvl_utilitario(6)
+DEFINE BAR 6 OF utilitario PROMPT "\<Validar Base de Datos" ;
+	SKIP FOR !nvl_utilitario(7)
+DEFINE BAR 7 OF utilitario PROMPT "\-"
+DEFINE BAR 8 OF utilitario PROMPT "Reconstru\<ir/Restaurar Información de Movimientos diarios" ;
+	SKIP FOR !nvl_utilitario(8) or Lfax91
+ON SELECTION BAR 1 OF utilitario do form  parametros
+ON SELECTION BAR 2 OF utilitario do form para_chq_cte_fax
+ON SELECTION BAR 4 OF utilitario ;
+	DO _1eh128nkp ;
+	IN LOCFILE("E:\DESARROLLOS\AGN\PAGADURIA\MENUS\MENUR" ,"MPX;MPR|FXP;PRG" ,"DÓNDE está MENUR?")
+ON SELECTION BAR 5 OF utilitario ;
+	DO _1eh128nkq ;
+	IN LOCFILE("E:\DESARROLLOS\AGN\PAGADURIA\MENUS\MENUR" ,"MPX;MPR|FXP;PRG" ,"DÓNDE está MENUR?")
+ON SELECTION BAR 6 OF utilitario ;
+	DO _1eh128nkr ;
+	IN LOCFILE("E:\DESARROLLOS\AGN\PAGADURIA\MENUS\MENUR" ,"MPX;MPR|FXP;PRG" ,"DÓNDE está MENUR?")
+ON BAR 8 OF utilitario ACTIVATE POPUP reconstrui
+
+DEFINE POPUP reconstrui MARGIN RELATIVE SHADOW COLOR SCHEME 4
+DEFINE BAR 1 OF reconstrui PROMPT "Reconstru\<ir Información"
+DEFINE BAR 2 OF reconstrui PROMPT "\<Restaurar Información"
+ON SELECTION BAR 1 OF reconstrui do pr_reconstruir
+ON SELECTION BAR 2 OF reconstrui do pr_restaurar
+
+DEFINE POPUP usuarios MARGIN RELATIVE SHADOW COLOR SCHEME 4
+DEFINE BAR 1 OF usuarios PROMPT "\<General"
+DEFINE BAR 2 OF usuarios PROMPT "\<Archivo"
+DEFINE BAR 3 OF usuarios PROMPT "\<Captura"
+DEFINE BAR 4 OF usuarios PROMPT "\<Movimiento"
+DEFINE BAR 5 OF usuarios PROMPT "\<Reportes"
+DEFINE BAR 6 OF usuarios PROMPT "Ac\<tualizaciones"
+DEFINE BAR 7 OF usuarios PROMPT "\<Utilitarios"
+ON SELECTION BAR 1 OF usuarios do form fm_general
+ON SELECTION BAR 2 OF usuarios do form fm_archivo
+ON SELECTION BAR 3 OF usuarios do form fm_captura
+ON SELECTION BAR 4 OF usuarios do form fm_movimiento
+ON SELECTION BAR 5 OF usuarios do form fm_reporte
+ON SELECTION BAR 6 OF usuarios do form fm_actualiza
+ON SELECTION BAR 7 OF usuarios do form fm_utilitario
+
+ON SELECTION POPUP suc_agenc 
+
+*       *********************************************************
+*       *                                                         
+*       * _1EH128NK3  ON SELECTION PAD                            
+*       *                                                         
+*       * Procedure Origin:                                       
+*       *                                                         
+*       * From Menu:  MENUR.MPR,            Record:  153          
+*       * Called By:  ON SELECTION PAD                            
+*       * Prompt:     Salir                                       
+*       * Snippet:    1                                           
+*       *                                                         
+*       *********************************************************
+*
+PROCEDURE _1eh128nk3
+*set step on
+*!*	clear all
+*!*	close all
+clear events
+
+
+
+*       *********************************************************
+*       *                                                         
+*       * _1EH128NK4  ON SELECTION BAR 2 OF POPUP chequesdeg      
+*       *                                                         
+*       * Procedure Origin:                                       
+*       *                                                         
+*       * From Menu:  MENUR.MPR,            Record:   18          
+*       * Called By:  ON SELECTION BAR 2 OF POPUP chequesdeg      
+*       * Prompt:     Modificación Cheques de Gerencia            
+*       * Snippet:    2                                           
+*       *                                                         
+*       *********************************************************
+*
+PROCEDURE _1eh128nk4
+selec 0
+if !used("bramfc50")
+  use bramfc50
+else
+  select bramfc50
+endif
+set order to tag fecha
+go top
+set filter to mov=1
+do form fmodifica_cheques
+
+
+
+*       *********************************************************
+*       *                                                         
+*       * _1EH128NK5  ON SELECTION BAR 2 OF POPUP abonoctaco      
+*       *                                                         
+*       * Procedure Origin:                                       
+*       *                                                         
+*       * From Menu:  MENUR.MPR,            Record:   22          
+*       * Called By:  ON SELECTION BAR 2 OF POPUP abonoctaco      
+*       * Prompt:     Modificación Abono Cta Corriente            
+*       * Snippet:    3                                           
+*       *                                                         
+*       *********************************************************
+*
+PROCEDURE _1eh128nk5
+selec 0
+if !used("bramfc50")
+  use bramfc50
+else
+  select bramfc50
+endif
+set order to tag fecha
+go top
+set filter to  mov=2
+do form fmodifica_abonos
+
+
+
+*       *********************************************************
+*       *                                                         
+*       * _1EH128NK6  ON SELECTION BAR 2 OF POPUP ordendefax      
+*       *                                                         
+*       * Procedure Origin:                                       
+*       *                                                         
+*       * From Menu:  MENUR.MPR,            Record:   26          
+*       * Called By:  ON SELECTION BAR 2 OF POPUP ordendefax      
+*       * Prompt:     Modificación Orden de Fax                   
+*       * Snippet:    4                                           
+*       *                                                         
+*       *********************************************************
+*
+PROCEDURE _1eh128nk6
+selec 0
+if !used("bramfc50")
+  use bramfc50
+else
+  select bramfc50
+endif
+set order to tag fecha
+go top
+set filter to mov=3
+do form fmodifica_fax
+
+
+
+*       *********************************************************
+*       *                                                         
+*       * _1EH128NK7  ON SELECTION BAR 6 OF POPUP reportes        
+*       *                                                         
+*       * Procedure Origin:                                       
+*       *                                                         
+*       * From Menu:  MENUR.MPR,            Record:   51          
+*       * Called By:  ON SELECTION BAR 6 OF POPUP reportes        
+*       * Prompt:     Registro control de Cheques                 
+*       * Snippet:    5                                           
+*       *                                                         
+*       *********************************************************
+*
+PROCEDURE _1eh128nk7
+repor form lista_chq to printer prompt preview
+close table all
+
+
+*       *********************************************************
+*       *                                                         
+*       * _1EH128NK8  ON SELECTION BAR 8 OF POPUP reportes        
+*       *                                                         
+*       * Procedure Origin:                                       
+*       *                                                         
+*       * From Menu:  MENUR.MPR,            Record:   56          
+*       * Called By:  ON SELECTION BAR 8 OF POPUP reportes        
+*       * Prompt:     Relación de pagos                           
+*       * Snippet:    6                                           
+*       *                                                         
+*       *********************************************************
+*
+PROCEDURE _1eh128nk8
+_asciicols=130
+_asciirows=75
+selec 0
+if !used("bramfc50")
+  use bramfc50
+else
+  select bramfc50
+endif
+set order to tag tmp1
+use
+sele 10
+if !used('memdata')
+  use memdata
+endif
+sele memdata
+if  subst(alltrim(memdata->w__nc),1,2)<>"91"
+  repor form relacion_pagofax to printer prompt preview
+  selec 0
+  if !used("bramfc50")
+    use bramfc50
+  else
+    select bramfc50
+  endif
+  set order to tag tmp1
+  selec 0
+  if !used("bramfc55")
+    use bramfc55
+  else
+    select bramfc55
+  endif
+  set order to tag tmp
+  go top
+  set rela to alltrim(str(bramfc55.mov))+ced into bramfc50
+  fichero="Re_pagos"+dtos(w_f)+".TXT"
+  carchivo=lower("&lcDir\interfase\"+fichero)
+  if file("&carchivo")
+    !del &carchivo
+  endif
+  report form relacion_pagofax environment noconsole to file &carchivo ascii
+  if messagebox("Si Desea Copiar este reporte en el Archivo <Re_pagos.txt>, Por Favor Prepare el Drive A:",(4+32+256),"ATENCION") = 6
+    if file("a:Re_pagos.txt")
+      !del a:Re_pagos.txt
+    endif
+    report form relacion_pagofax environment noconsole to file a:Re_pagos.txt ascii
+    messagebox("El Archivo fue copiado en el disquete y en la carpeta interfase.",(0+32+0),"ATENCION")
+  endif
+else
+  repor form relacion_pago to printer prompt preview
+  selec 0
+  if !used("bramfc50")
+    use bramfc50
+  else
+    select bramfc50
+  endif
+  set order to tag tmp1
+  selec 0
+  if !used("bramfc55")
+    use bramfc55
+  else
+    select bramfc55
+  endif
+  set order to tag tmp
+  go top
+  set rela to alltrim(str(bramfc55.mov))+ced into bramfc50
+  fichero="Re_pagos"+dtos(w_f)+".TXT"
+  carchivo=lower("&lcDir\interfase\"+fichero)
+  if file("&carchivo")
+    !del &carchivo
+  endif
+  report form relacion_pago environment noconsole to file &carchivo ascii
+  if messagebox("Si Desea Copiar este reporte en el Archivo <Re_pagos.txt>, Por Favor Prepare el Drive A:",(4+32+256),"ATENCION") = 6
+    if file("a:Re_pagos.txt")
+      !del a:Re_pagos.txt
+    endif
+    report form relacion_pago environment noconsole to file a:Re_pagos.txt ascii
+    messagebox("El Archivo fue copiado en el disquete y en la carpeta interfase.",(0+32+0),"ATENCION")
+  endif
+endif
+*close table all
+
+
+
+*       *********************************************************
+*       *                                                         
+*       * _1EH128NK9  ON SELECTION BAR 9 OF POPUP reportes        
+*       *                                                         
+*       * Procedure Origin:                                       
+*       *                                                         
+*       * From Menu:  MENUR.MPR,            Record:   57          
+*       * Called By:  ON SELECTION BAR 9 OF POPUP reportes        
+*       * Prompt:     Proveedores                                 
+*       * Snippet:    7                                           
+*       *                                                         
+*       *********************************************************
+*
+PROCEDURE _1eh128nk9
+repor form proveedores to printer prompt preview
+close table all
+
+
+
+
+*       *********************************************************
+*       *                                                         
+*       * _1EH128NKA  ON SELECTION BAR 14 OF POPUP reportes       
+*       *                                                         
+*       * Procedure Origin:                                       
+*       *                                                         
+*       * From Menu:  MENUR.MPR,            Record:   90          
+*       * Called By:  ON SELECTION BAR 14 OF POPUP reportes       
+*       * Prompt:     Listado de Envíos Fa<x                      
+*       * Snippet:    8                                           
+*       *                                                         
+*       *********************************************************
+*
+PROCEDURE _1eh128nka
+store 0 to num,nvalor
+select 0
+create cursor c_enviofax (usuario c(5),valor n(17,2),fecha d,origen c(7),destino c(7),;
+                          hora c(12),nombre c(30),n_destino c(30),n_origen c(30))
+selec 0
+if !used("da_enviofax")
+  use da_enviofax
+else
+  select da_enviofax
+endif
+set order to tag fecha
+set filter to fecha=w_f
+go top
+do while !eof()
+  select c_enviofax
+  append blank
+  replace c_enviofax.fecha with da_enviofax.fecha
+  replace c_enviofax.usuario with da_enviofax.usuario
+  replace c_enviofax.nombre with da_enviofax.nombre
+  replace c_enviofax.valor with da_enviofax.valor
+  replace c_enviofax.origen with da_enviofax.origen
+  replace c_enviofax.destino with da_enviofax.destino
+  replace c_enviofax.hora with da_enviofax.hora
+  replace c_enviofax.n_destino with da_enviofax.n_destino
+  replace c_enviofax.n_origen with da_enviofax.n_origen
+  num=num+1
+  select da_enviofax
+  skip
+enddo
+select da_enviofax
+set filter to
+use
+if num=0
+  =mensaje_informacion("No existen datos para generar el reporte")
+  return
+endif
+select c_enviofax
+report form li_enviofax to printer prompt preview
+close table all
+
+
+
+
+*       *********************************************************
+*       *                                                         
+*       * _1EH128NKB  ON SELECTION BAR 15 OF POPUP reportes       
+*       *                                                         
+*       * Procedure Origin:                                       
+*       *                                                         
+*       * From Menu:  MENUR.MPR,            Record:   91          
+*       * Called By:  ON SELECTION BAR 15 OF POPUP reportes       
+*       * Prompt:     Relación de Pagos por Ciudad                
+*       * Snippet:    9                                           
+*       *                                                         
+*       *********************************************************
+*
+PROCEDURE _1eh128nkb
+set exact off
+set near off
+ciudad=""
+num=0
+select 0
+create cursor cciudad (fecha d,tipo_mov n(1),benef c(30),nit_ced c(11),valor n(17,2),;
+   cuenta c(9),destino c(7),nom_dest c(36))
+inde on destino tag destino
+set orde to tag destino
+selec 0
+if !used("bramfc01")
+   use bramfc01
+else
+   select bramfc01
+endif
+set order to tag bramfc01
+selec 0
+if !used("bramfc50")
+   use bramfc50
+else
+   select bramfc50
+endif
+set order to tag bramfcced
+selec 0
+if !used("bramfc55")
+   use bramfc55
+else
+   select bramfc55
+endif
+set order to tag tmp1
+set relation to alltrim(str(mov))+ced_gir into bramfc50
+scan
+   if bramfc55.mov<>1
+      select bramfc01
+      seek bramfc50.cdes
+      if found()
+         ciudad=bramfc01.nom
+      endif
+      select cciudad
+      append blank
+      replace cciudad->fecha with w_f
+      replace cciudad->tipo_mov with bramfc55.mov
+      replace cciudad->benef with bramfc55.nom
+      replace cciudad->nit_ced with bramfc55.ced
+      replace cciudad->valor with bramfc55.tval+bramfc55.tiva-bramfc55.triva-bramfc55.tica-bramfc55.tret
+      replace cciudad->cuenta with bramfc50.cta
+      replace cciudad->destino with bramfc50.cdes &&iif(bramfc55.mov=1,bramfc50.cd,bramfc50.cdes)
+      replace cciudad->nom_dest with ciudad
+      num=num+1
+   endif
+endscan
+select bramfc55
+set relation to
+use
+select bramfc50
+use
+if num=0
+   =mensaje_informacion("No existen datos para generar el reporte")
+   return
+endif
+select cciudad
+go top
+report form li_ciudades to printer prompt preview
+close table all
+
+
+
+
+*       *********************************************************
+*       *                                                         
+*       * _1EH128NKC  ON SELECTION BAR 1 OF POPUP ordendepag      
+*       *                                                         
+*       * Procedure Origin:                                       
+*       *                                                         
+*       * From Menu:  MENUR.MPR,            Record:   49          
+*       * Called By:  ON SELECTION BAR 1 OF POPUP ordendepag      
+*       * Prompt:     Ordenado por Cédula/Nit                     
+*       * Snippet:    10                                          
+*       *                                                         
+*       *********************************************************
+*
+PROCEDURE _1eh128nkc
+sele 10
+if !used('memdata')
+  use memdata
+endif
+sele memdata
+if  subst(alltrim(memdata->w__nc),1,5)<>"91201"
+  repor form orden_pagofax to printer prompt preview
+else
+  repor form orden_pago to printer prompt preview
+
+  CNom_Impre = set("printer",2)
+  set printer to name postscript
+  cfileName = "PagoFax_"+dtos(w_f)
+  cf=cfileName+".ps"
+  cf2=cfileName+".pdf"
+  _screen.mousepointer=11
+  _screen.mousepointer=11
+  wait window "Generando Archivo en formato PDF. Espere un momento..." nowait
+  report form orden_pago noconsole to file &cf
+  =ps2pdf("&cf")
+  declare integer ShellExecute in SHELL32.dll integer nWinHandle,string cOperation,;
+    string cFileName, string cParameters,string cDirectory, integer nShowWindow
+  *ShellExecute(0, 'Open', '.\pdffiles\&cf2' , '', '', 1)
+  *dele file &lcDir\DATOS\psfiles\&cf  &&Borra el archivo
+  dele file &cf  &&Borra el archivo
+  messagebox("El Reporte de Ordenes de Pago Fax se generó en formato "+;
+    "PDF en el archivo &lcdir\datos\pdfiles\&cf2",64,"ATENCION")
+  _screen.mousepointer=0
+  _screen.mousepointer=0
+  set printer to default name CNom_Impre
+
+endif
+close table all
+
+
+*       *********************************************************
+*       *                                                         
+*       * _1EH128NKD  ON SELECTION BAR 2 OF POPUP ordendepag      
+*       *                                                         
+*       * Procedure Origin:                                       
+*       *                                                         
+*       * From Menu:  MENUR.MPR,            Record:   50          
+*       * Called By:  ON SELECTION BAR 2 OF POPUP ordendepag      
+*       * Prompt:     Ordenado por Captura                        
+*       * Snippet:    11                                          
+*       *                                                         
+*       *********************************************************
+*
+PROCEDURE _1eh128nkd
+sele 10
+if !used('memdata')
+  use memdata
+endif
+sele memdata
+if  subst(alltrim(memdata->w__nc),1,5)<>"91201"
+ repor form orden_pagofax2 to printer prompt preview
+else
+ repor form orden_pago2 to printer prompt preview
+
+  CNom_Impre = set("printer",2)
+  set printer to name postscript
+  cfileName = "PagoFax_"+dtos(w_f)
+  cf=cfileName+".ps"
+  cf2=cfileName+".pdf"
+  _screen.mousepointer=11
+  _screen.mousepointer=11
+  wait window "Generando Archivo en formato PDF. Espere un momento..." nowait
+  report form orden_pago2 noconsole to file &cf
+  =ps2pdf("&cf")
+  declare integer ShellExecute in SHELL32.dll integer nWinHandle,string cOperation,;
+    string cFileName, string cParameters,string cDirectory, integer nShowWindow
+  *ShellExecute(0, 'Open', '.\pdffiles\&cf2' , '', '', 1)
+  *dele file &lcDir\DATOS\psfiles\&cf  &&Borra el archivo
+  dele file &cf  &&Borra el archivo
+  messagebox("El Reporte de Ordenes de Pago Fax se generó en formato "+;
+    "PDF en el archivo &lcdir\datos\pdfiles\&cf2",64,"ATENCION")
+  _screen.mousepointer=0
+  _screen.mousepointer=0
+  set printer to default name CNom_Impre
+
+endif
+close table all
+
+
+*       *********************************************************
+*       *                                                         
+*       * _1EH128NKE  ON SELECTION BAR 1 OF POPUP registroco      
+*       *                                                         
+*       * Procedure Origin:                                       
+*       *                                                         
+*       * From Menu:  MENUR.MPR,            Record:   54          
+*       * Called By:  ON SELECTION BAR 1 OF POPUP registroco      
+*       * Prompt:     Ordenado por Cédula/Nit                     
+*       * Snippet:    12                                          
+*       *                                                         
+*       *********************************************************
+*
+PROCEDURE _1eh128nke
+repor form lista_cte_fax to printer prompt preview
+num=0
+nom_prove=""
+cant=""
+select 0
+create cursor c_reporte (fecha d,consecutivo c(12),proveedor c(35),valor n(17,2),;
+  observacion c(12),NIT C(12),movimiento c(5))
+select bramfc58
+go top
+do while !eof()
+  num=num+1
+  nom_prove=bramfc58.nom
+  select bramfc50
+  seek left(bramfc58.ced,11)
+  select c_reporte
+  append blank
+  replace c_reporte.fecha with w_f,;
+    c_reporte.consecutivo with right('000000000000'+alltrim(str(memdata->w__concf+num)),12),;
+    c_reporte.proveedor with bramfc58.nom,c_reporte.valor with bramfc58.val,;
+    c_reporte.observacion with "cd "+bramfc50.cdes,c_reporte.nit with bramfc58.ced,;
+    c_reporte.movimiento with iif(bramfc58.tipo_mov=2,"ABONO",;
+      iif(bramfc58.tipo_mov=3,"FAX","CHEQUE"))
+  select bramfc58
+  skip
+enddo
+if num=0
+  =mensaje_informacion("No existen datos para generar el archivo Cta_Cte.xls en Excel")
+  return
+endif
+select c_reporte
+fichero="Cta_Cte"+dtos(w_f)+".XLS"
+carchivo=lower("&lcDir\interfase\"+fichero)
+if file("&carchivo")
+  !del &carchivo
+endif
+copy to &carchivo xl5
+if messagebox("Si Desea Copiar el Archivo <Cta_Cte.xls> a Diskette, Por Favor Prepare el Drive A:",(4+32+256),"ATENCION") = 6
+  if file("a:Cta_Cte.xls")
+    !del a:Cta_Cte.xls
+  endif
+  copy to a:Cta_Cte xl5
+  messagebox("El Archivo fue copiado en el disquete y en la carpeta interfase.",(0+32+0),"ATENCION")
+endif
+select bramfc58
+set filter to
+select bramfc50
+set filter to
+close table all
+
+
+
+*       *********************************************************
+*       *                                                         
+*       * _1EH128NKF  ON SELECTION BAR 2 OF POPUP registroco      
+*       *                                                         
+*       * Procedure Origin:                                       
+*       *                                                         
+*       * From Menu:  MENUR.MPR,            Record:   55          
+*       * Called By:  ON SELECTION BAR 2 OF POPUP registroco      
+*       * Prompt:     Ordenado por Captura                        
+*       * Snippet:    13                                          
+*       *                                                         
+*       *********************************************************
+*
+PROCEDURE _1eh128nkf
+repor form li_cte_fax2 to printer prompt preview
+num=0
+nom_prove=""
+cant=""
+select 0
+create cursor c_reporte (fecha d,consecutivo c(12),proveedor c(35),valor n(17,2),;
+  observacion c(12),regist c(4),movi c(1),nit c(12),movimiento c(5))
+inde on movi+regist tag mov_ord
+inde on regist tag ordeno
+set orde to tag ordeno
+select bramfc58
+go top
+do while !eof()
+  num=num+1
+  nom_prove=bramfc58.nom
+  select bramfc50
+  seek left(bramfc58.ced,11)
+  select c_reporte
+  append blank
+  replace c_reporte.fecha with w_f
+ replace c_reporte.consecutivo with right('000000000000'+alltrim(str(memdata->w__concf+num)),12)
+  replace c_reporte.proveedor with bramfc58.nom
+  replace c_reporte.valor with bramfc58.val
+  replace c_reporte.observacion with "cd "+bramfc50.cdes
+  replace c_reporte.regist with padl(alltrim(str(bramfc50.regis)),4,"0")
+  replace c_reporte.movi with alltrim(str(bramfc58.tipo_mov))
+  replace c_reporte.nit with bramfc58.ced,;
+    c_reporte.movimiento with iif(bramfc58.tipo_mov=2,"ABONO",;
+      iif(bramfc58.tipo_mov=3,"FAX","CHEQUE"))
+  select bramfc58
+  skip
+enddo
+if num=0
+  =mensaje_informacion("No existen datos para generar el archivo Cta_Cte.xls en Excel")
+  return
+endif
+select c_reporte
+set order to tag mov_ord
+fichero="Cta_Cte"+dtos(w_f)+".XLS"
+carchivo=lower("&lcDir\interfase\"+fichero)
+if file("&carchivo")
+  !del &carchivo
+endif
+copy to &carchivo xl5
+if messagebox("Si Desea Copiar el Archivo <Cta_Cte.xls> a Diskette, Por Favor Prepare el Drive A:",(4+32+256),"ATENCION") = 6
+  if file("a:Cta_Cte.xls")
+    !del a:Cta_Cte.xls
+  endif
+  copy to a:Cta_Cte xl5
+  messagebox("El Archivo fue copiado en el disquete y en la carpeta interfase.",(0+32+0),"ATENCION")
+endif
+select bramfc58
+set filter to
+select bramfc50
+set filter to
+close table all
+
+
+
+*       *********************************************************
+*       *                                                         
+*       * _1EH128NKG  ON SELECTION BAR 1 OF POPUP generación      
+*       *                                                         
+*       * Procedure Origin:                                       
+*       *                                                         
+*       * From Menu:  MENUR.MPR,            Record:   60          
+*       * Called By:  ON SELECTION BAR 1 OF POPUP generación      
+*       * Prompt:     Hoja de Ruta Cuenta Corriente               
+*       * Snippet:    14                                          
+*       *                                                         
+*       *********************************************************
+*
+PROCEDURE _1eh128nkg
+store 0 to num,nvalor
+store "" to ccentro,letra
+selec 0
+if !used("memdata")
+  use memdata
+else
+  select memdata
+endif
+select 0
+create cursor crutac (conse c(12),tipoc n(1),tipoc2 c(1),tot n(18,2),regist c(4),movi c(1),;
+  cod_oficin c(3),zonal c(2),Cremoto c(3),ctdad n(3),cde c(7))
+index on Cremoto+cod_oficin+tipoc2 tag Mllave
+*set order to tag Mllave
+inde on regist tag ordeno
+set orde to tag ordeno
+selec 0
+if !used("da_oficina")
+  use da_oficina
+else
+  select da_oficina
+endif
+set order to tag cod_oficin
+go top
+selec 0
+if !used("bramfc55")
+  use bramfc55
+else
+  select bramfc55
+endif
+set order to tag tmp
+set filter to mov=2 and tipo_cta=1
+go top
+do while !eof()
+  num=num+1
+  skip
+enddo
+set filter to
+if num=0
+  =mensaje_informacion("No existen datos para generar el reporte")
+  return
+endif
+selec 0
+if !used("bramfc50")
+  use bramfc50
+else
+  select bramfc50
+endif
+set order to tag ced_gir
+set filter to between(tipo_cta,1,2)
+sele bramfc55
+set order to tag ced_gir
+set rela to ced_gir into bramfc50
+set filt to mov=2 &&and tipo_cta=1
+go top
+do while !eof()
+  store .t. to nograbar
+  if empty(bramfc50->cuentano)
+    messagebox("el lote "+bramfc50->lot+" por "+str(bramfc55->Tval)+" No tiene cuenta por favor verifique",0+48+0,"ATENCION")
+    nograbar  = .f.
+  endif
+  store space(3) to Cofici
+  store space(3) to CVremoto
+  Cofici = left(bramfc50->cuentano,3)
+  sele da_oficina  && 5
+  seek Cofici
+  if !found()
+    =mensaje_informacion("No existe la Oficina "+ Cofici+" en la tabla da_oficina. Debe agregarla")
+    return
+  endif
+  CVremoto=da_oficina.remoto
+  if nograbar
+    select crutac
+    append blank
+    replace tipoc with bramfc50.tipo_cta,tipoc2 with iif(bramfc55->tipo_cta=1,"C","H")
+    replace tot with bramfc55.Tval+bramfc55.tiva-bramfc55.triva-bramfc55.tica-bramfc55.tret
+    replace regist with padl(alltrim(str(bramfc50.regis)),4,"0"),ctdad with 1
+    replace movi with alltrim(str(bramfc55.mov)),Cremoto with CVremoto
+    replace cod_oficin with Cofici, zonal with da_oficina.proceso
+    replace cde with bramfc50.cdes
+  endif
+  select bramfc55
+  skip
+enddo
+nreg=0
+select crutac
+go top
+do while !eof()
+  nreg=nreg+1
+  ccentro=left(crutac.cde,2)
+  letra="P"+iif(ccentro="01","A",iif(ccentro="21","B",iif(ccentro="41","C",;
+    iif(ccentro="61","D",iif(ccentro="22","E","0")))))+alltrim(str(memdata->w__concf+nreg))
+  replace crutac.conse with letra
+  skip
+enddo
+set filter to movi=alltrim(str(2)) and tipoc=1
+go top
+do while !eof()
+  nvalor=nvalor+crutac.tot
+  skip
+enddo
+set order to tag Mllave
+go top
+report form li_ruta_cta_cte to printer prompt preview
+close table all
+
+
+*!*	store 0 to num,nvalor
+*!*	select 0
+*!*	create cursor c_rutacc (cantidad n(4),valor n(20,2))
+*!*	selec 0
+*!*	if !used("bramfc58")
+*!*	  use bramfc58
+*!*	else
+*!*	  select bramfc58
+*!*	endif
+*!*	set order to tag tmp
+*!*	set filter to tipo_mov=2 and tipo_cta=1
+*!*	go top
+*!*	do while !eof()
+*!*	  nvalor=nvalor+bramfc58.val
+*!*	  num=num+1
+*!*	  skip
+*!*	enddo
+*!*	set filter to
+*!*	if num=0
+*!*	  =mensaje_informacion("No existen datos para generar el reporte")
+*!*	  return
+*!*	endif
+*!*	select c_rutacc
+*!*	append blank
+*!*	replace cantidad with num
+*!*	replace valor with nvalor
+*!*	report form li_ruta_cta_cte to printer prompt preview
+*!*	close table all
+
+
+
+
+*       *********************************************************
+*       *                                                         
+*       * _1EH128NKH  ON SELECTION BAR 2 OF POPUP generación      
+*       *                                                         
+*       * Procedure Origin:                                       
+*       *                                                         
+*       * From Menu:  MENUR.MPR,            Record:   61          
+*       * Called By:  ON SELECTION BAR 2 OF POPUP generación      
+*       * Prompt:     Hoja de Ruta Ahorro                         
+*       * Snippet:    15                                          
+*       *                                                         
+*       *********************************************************
+*
+PROCEDURE _1eh128nkh
+store 0 to num,nvalor
+store "" to ccentro,letra
+selec 0
+if !used("memdata")
+  use memdata
+else
+  select memdata
+endif
+select 0
+create cursor crutah (conse c(12),tipoc n(1),tipoc2 c(1),tot n(18,2),regist c(4),movi c(1),;
+  cod_oficin c(3),zonal c(2),Cremoto c(3),ctdad n(3),cde c(7))
+index on Cremoto+cod_oficin+tipoc2 tag Mllave
+*set order to tag Mllave
+inde on regist tag ordeno
+set orde to tag ordeno
+selec 0
+if !used("da_oficina")
+  use da_oficina
+else
+  select da_oficina
+endif
+set order to tag cod_oficin
+go top
+selec 0
+if !used("bramfc55")
+  use bramfc55
+else
+  select bramfc55
+endif
+set order to tag tmp
+set filter to mov=2 and tipo_cta=2
+go top
+do while !eof()
+  num=num+1
+  skip
+enddo
+set filter to
+if num=0
+  =mensaje_informacion("No existen datos para generar el reporte")
+  return
+endif
+selec 0
+if !used("bramfc50")
+  use bramfc50
+else
+  select bramfc50
+endif
+set order to tag ced_gir
+set filter to between(tipo_cta,1,2)
+sele bramfc55
+set order to tag ced_gir
+set rela to ced_gir into bramfc50
+set filt to mov=2 &&and tipo_cta=2
+go top
+do while !eof()
+  store .t. to nograbar
+  if empty(bramfc50->cuentano)
+    messagebox("el lote "+bramfc50->lot+" por "+str(bramfc55->Tval)+" No tiene cuenta por favor verifique",0+48+0,"ATENCION")
+    nograbar  = .f.
+  endif
+  store space(3) to Cofici
+  store space(3) to CVremoto
+  Cofici = left(bramfc50->cuentano,3)
+  sele da_oficina  && 5
+  seek Cofici
+  if !found()
+    =mensaje_informacion("No existe la Oficina "+ Cofici+" en la tabla da_oficina. Debe agregarla")
+    return
+  endif
+  CVremoto=da_oficina.remoto
+  if nograbar
+    select crutah
+    append blank
+    replace tipoc with bramfc50.tipo_cta,tipoc2 with iif(bramfc55->tipo_cta=1,"C","H")
+    replace tot with bramfc55.Tval+bramfc55.tiva-bramfc55.triva-bramfc55.tica-bramfc55.tret
+    replace regist with padl(alltrim(str(bramfc50.regis)),4,"0"),ctdad with 1
+    replace movi with alltrim(str(bramfc55.mov)),Cremoto with CVremoto
+    replace cod_oficin with Cofici, zonal with da_oficina.proceso
+    replace cde with bramfc50.cdes
+  endif
+  select bramfc55
+  skip
+enddo
+nreg=0
+select crutah
+go top
+do while !eof()
+  nreg=nreg+1
+  ccentro=left(crutah.cde,2)
+  letra="P"+iif(ccentro="01","A",iif(ccentro="21","B",iif(ccentro="41","C",;
+    iif(ccentro="61","D",iif(ccentro="22","E","0")))))+alltrim(str(memdata->w__concf+nreg))
+  replace crutah.conse with letra
+  skip
+enddo
+set filter to movi=alltrim(str(2)) and tipoc=2
+go top
+do while !eof()
+  nvalor=nvalor+crutah.tot
+  skip
+enddo
+set order to tag Mllave
+*set filter to movi=2 and tipoc=2
+go top
+report form li_ruta_ahorro to printer prompt preview
+close table all
+
+
+*!*	select 0
+*!*	create cursor c_rutaah (cantidad n(4),valor n(20,2))
+*!*	selec 0
+*!*	if !used("bramfc58")
+*!*	  use bramfc58
+*!*	else
+*!*	  select bramfc58
+*!*	endif
+*!*	set order to tag tmp
+*!*	set filter to tipo_mov=2 and tipo_cta=2
+*!*	go top
+*!*	do while !eof()
+*!*	  nvalor=nvalor+bramfc58.val
+*!*	  num=num+1
+*!*	  skip
+*!*	enddo
+*!*	set filter to
+*!*	if num=0
+*!*	  =mensaje_informacion("No existen datos para generar el reporte")
+*!*	  return
+*!*	endif
+*!*	select c_rutaah
+*!*	append blank
+*!*	replace cantidad with num
+*!*	replace valor with nvalor
+*!*	report form li_ruta_ahorro to printer prompt preview
+*!*	close table all
+
+
+
+*       *********************************************************
+*       *                                                         
+*       * _1EH128NKI  ON SELECTION BAR 1 OF POPUP notascredi      
+*       *                                                         
+*       * Procedure Origin:                                       
+*       *                                                         
+*       * From Menu:  MENUR.MPR,            Record:   66          
+*       * Called By:  ON SELECTION BAR 1 OF POPUP notascredi      
+*       * Prompt:     Listado por Ced/Nit                         
+*       * Snippet:    16                                          
+*       *                                                         
+*       *********************************************************
+*
+PROCEDURE _1eh128nki
+repor form li_notas to printer prompt preview
+
+* AGREGADO 2003/12/15  AGN
+if alltrim(centro_dian)="9120100"
+  CNom_Impre = set("printer",2)
+  set printer to name postscript
+  cfileName = "NotasAbonos_"+dtos(w_f)
+  cf=cfileName+".ps"
+  cf2=cfileName+".pdf"
+  _screen.mousepointer=11
+  _screen.mousepointer=11
+  wait window "Generando Archivo en formato PDF. Espere un momento..." nowait
+  report form li_notas noconsole to file &cf
+  =ps2pdf("&cf")
+  declare integer ShellExecute in SHELL32.dll integer nWinHandle,string cOperation,;
+    string cFileName, string cParameters,string cDirectory, integer nShowWindow
+  *ShellExecute(0, 'Open', '.\pdffiles\&cf2' , '', '', 1)
+  *dele file &lcDir\DATOS\psfiles\&cf  &&Borra el archivo
+  dele file &cf  &&Borra el archivo
+  messagebox("El Reporte de Notas de los Abonos se generó en formato "+;
+    "PDF en el archivo &lcdir\datos\pdfiles\&cf2",64,"ATENCION")
+  _screen.mousepointer=0
+  _screen.mousepointer=0
+  set printer to default name CNom_Impre
+endif  && if centro_dian="9120100"
+* FIN AGREGADO 2003/12/15  AGN
+
+close table all
+
+
+
+*       *********************************************************
+*       *                                                         
+*       * _1EH128NKJ  ON SELECTION BAR 2 OF POPUP notascredi      
+*       *                                                         
+*       * Procedure Origin:                                       
+*       *                                                         
+*       * From Menu:  MENUR.MPR,            Record:   67          
+*       * Called By:  ON SELECTION BAR 2 OF POPUP notascredi      
+*       * Prompt:     Listado por Orden de Captura                
+*       * Snippet:    17                                          
+*       *                                                         
+*       *********************************************************
+*
+PROCEDURE _1eh128nkj
+repor form li_notas2 to printer prompt preview
+
+* AGREGADO 2003/12/15  AGN
+if alltrim(centro_dian)="9120100"
+  CNom_Impre = set("printer",2)
+  set printer to name postscript
+  cfileName = "NotasAbonos_"+dtos(w_f)
+  cf=cfileName+".ps"
+  cf2=cfileName+".pdf"
+  _screen.mousepointer=11
+  _screen.mousepointer=11
+  wait window "Generando Archivo en formato PDF. Espere un momento..." nowait
+  report form li_notas2 noconsole to file &cf
+  =ps2pdf("&cf")
+  declare integer ShellExecute in SHELL32.dll integer nWinHandle,string cOperation,;
+    string cFileName, string cParameters,string cDirectory, integer nShowWindow
+  *ShellExecute(0, 'Open', '.\pdffiles\&cf2' , '', '', 1)
+  *dele file &lcDir\DATOS\psfiles\&cf  &&Borra el archivo
+  dele file &cf  &&Borra el archivo
+  messagebox("El Reporte de Notas de los Abonos se generó en formato "+;
+    "PDF en el archivo &lcdir\datos\pdfiles\&cf2",64,"ATENCION")
+  _screen.mousepointer=0
+  _screen.mousepointer=0
+  set printer to default name CNom_Impre
+endif  && if centro_dian="9120100"
+* FIN AGREGADO 2003/12/15  AGN
+
+close table all
+
+
+*       *********************************************************
+*       *                                                         
+*       * _1EH128NKK  ON SELECTION BAR 7 OF POPUP actualizac      
+*       *                                                         
+*       * Procedure Origin:                                       
+*       *                                                         
+*       * From Menu:  MENUR.MPR,            Record:  127          
+*       * Called By:  ON SELECTION BAR 7 OF POPUP actualizac      
+*       * Prompt:     Limpiar tabla de movimientos                
+*       * Snippet:    18                                          
+*       *                                                         
+*       *********************************************************
+*
+PROCEDURE _1eh128nkk
+close table all
+set near off
+if mensaje_pregunta("Nadie debe estar trabajando en el sistema para ejecutar esta acción"+;
+    chr(13)+"Desea eliminar los movimientos del día "+dtoc(w_f)+;
+    " y actualizar el histórico de movimientos ?")=6
+  sele 0
+  if !used('memdata')
+    use memdata
+  endif
+  select memdata
+  lrest = memdata.restaura
+  select 0
+  if !used("bramfc49")
+    use bramfc49 exclusive
+  endif
+  select 0
+  if !used("bramfc50")
+    use bramfc50 exclusive
+  endif
+  select 0
+  if !used("bramfc51")
+    use bramfc51 exclusive
+  endif
+  select 0
+  if !used("bramfc52")
+    use bramfc52 exclusive
+  endif
+  select 0
+  if !used("bramfc53")
+    use bramfc53 exclusive
+  endif
+  select 0
+  if !used("bramfc54")
+    use bramfc54 exclusive
+  endif
+  select 0
+  if !used("bramfc55")
+    use bramfc55 exclusive
+  endif
+  select 0
+  if !used("bramfc56")
+    use bramfc56 exclusive
+  endif
+  select 0
+  if !used("bramfc57")
+    use bramfc57 exclusive
+  endif
+  select 0
+  if !used("bramfc58")
+    use bramfc58 exclusive
+  endif
+  select 0
+  if !used("da_mvto_lote")
+    use da_mvto_lote exclusive
+  endif
+  select 0
+  if !used("da_fecha")
+    use da_fecha
+  endif
+  select 0
+  if !used("da_rete_var")
+    use da_rete_var exclusive
+  endif
+  select 0
+  if !used("da_fecha_mvto")
+    use da_fecha_mvto exclusive
+  endif
+  select 0
+  if !used("bramfc04")
+    use bramfc04 exclusive
+  endif
+  select 0
+  if !used("da_comenta")
+    use da_comenta exclusive
+  endif
+  select 0
+  if !used("cnotasdebito")
+    use cnotasdebito exclusive
+  endif
+  select 0
+  if !used("da_cargo_tabla")
+    use da_cargo_tabla exclusive
+  endif
+  select 0
+  if !used("da_cargo_varind")
+    use da_cargo_varind exclusive
+  endif
+
+  if !lrest
+
+  store "" to cLot,cLotex
+  dFecha = ctod("")
+  select bramfc50
+  go top
+  dFecha = bramfc50.fecha
+  do while !eof()
+    if alltrim(bramfc50.lot) = "FAX"
+      cLotex = "FAX"
+      exit
+    endif
+    skip
+  enddo
+  wait window "Procesando...Espere un momento por favor" nowait
+  lsiga = .t.
+  if empty(dFecha)
+    lsiga = .f.
+  endif
+  if lsiga
+    if cLotex = "FAX"
+      select da_mvto_lote
+      set order to tag fecha
+      seek dtos(dFecha)
+      if found()
+        mfch = da_mvto_lote.fecha
+        do while da_mvto_lote.fecha = mfch and !eof()
+          if alltrim(da_mvto_lote.fax) = "T"
+            lsiga = .f.
+            exit
+          endif
+          skip
+        enddo
+      endif  && if found()
+    endif   && if cLotex = "FAX"
+  endif  && if lsiga
+  if lsiga
+    if left(alltrim(centro_dian),5) = "91201"
+      if left(cBog,2)="21"
+        cLot = left(alltrim(cBog),1)+substr(alltrim(cBog),3,3)
+      else
+        cLot = "8501"
+      endif
+    else
+      cLot = left(alltrim(centro_dian),1)+substr(alltrim(centro_dian),3,3)
+    endif
+    select bramfc50
+    go top
+    do while !eof()
+      if !empty(bramfc50.fecha)
+        select da_mvto_lote
+        append blank
+        replace da_mvto_lote.mov with iif(alltrim(bramfc50.lot)="FAX",1,bramfc50.mov),;
+          da_mvto_lote.lot with iif(alltrim(bramfc50.lot)="FAX",cLot,bramfc50.lot),;
+          da_mvto_lote.cta with bramfc50.cta,da_mvto_lote.nat with bramfc50.nat,;
+          da_mvto_lote.cg with bramfc50.cg,da_mvto_lote.i1 with bramfc50.i1,;
+          da_mvto_lote.i2 with bramfc50.i2,da_mvto_lote.cd with bramfc50.cd
+        replace da_mvto_lote.nom with bramfc50.nom,da_mvto_lote.cc with bramfc50.cc,;
+          da_mvto_lote.ced with bramfc50.ced,da_mvto_lote.dat with bramfc50.dat,;
+          da_mvto_lote.val with bramfc50.val,da_mvto_lote.rt with bramfc50.rt,;
+          da_mvto_lote.i3 with bramfc50.i3,da_mvto_lote.md with bramfc50.md
+        replace da_mvto_lote.cret with bramfc50.cret,da_mvto_lote.ret with bramfc50.ret,;
+          da_mvto_lote.civa with bramfc50.civa,da_mvto_lote.porc with bramfc50.porc,;
+          da_mvto_lote.iva with bramfc50.iva,da_mvto_lote.cta_iva with bramfc50.cta_iva,;
+          da_mvto_lote.nd with bramfc50.nd,da_mvto_lote.ndat with bramfc50.ndat
+        replace da_mvto_lote.ret_iva_d with bramfc50.ret_iva_d,;
+          da_mvto_lote.ret_iva_no with bramfc50.ret_iva_no,;
+          da_mvto_lote.girado_a with bramfc50.girado_a,;
+          da_mvto_lote.ced_gir with bramfc50.ced_gir
+        replace da_mvto_lote.cc_gir with bramfc50.cc_gir,;
+          da_mvto_lote.ret_ica with bramfc50.ret_ica,;
+          da_mvto_lote.des_ica with bramfc50.des_ica,;
+          da_mvto_lote.fogafin with bramfc50.fogafin,;
+          da_mvto_lote.cuentano with bramfc50.cuentano,;
+          da_mvto_lote.tipo_cta with bramfc50.tipo_cta
+        replace da_mvto_lote.cdes with bramfc50.cdes,da_mvto_lote.para with bramfc50.para,;
+          da_mvto_lote.facturas with bramfc50.facturas,;
+          da_mvto_lote.conse_fact with bramfc50.conse_fact,;
+          da_mvto_lote.observa with bramfc50.observa,da_mvto_lote.codbco with bramfc50.codbco
+        replace da_mvto_lote.tipoctaach with bramfc50.tipoctaach,;
+          da_mvto_lote.expidechq with bramfc50.expidechq,;
+          da_mvto_lote.coper1 with bramfc50.coper1,da_mvto_lote.cd1 with bramfc50.cd1,;
+          da_mvto_lote.ncd1 with bramfc50.ncd1,da_mvto_lote.con1 with bramfc50.con1
+        replace da_mvto_lote.coper2 with bramfc50.coper2,da_mvto_lote.cd2 with bramfc50.cd2,;
+          da_mvto_lote.ncd2 with bramfc50.ncd2,da_mvto_lote.con2 with bramfc50.con2,;
+          da_mvto_lote.regis with bramfc50.regis,da_mvto_lote.fax with bramfc50.fax,;
+          da_mvto_lote.fecha with bramfc50.fecha,usu with bramfc50.usu,;
+          da_mvto_lote.tarjeta with bramfc50.tarjeta
+
+        replace da_mvto_lote.act_ab with bramfc50.act_ab,;
+          da_mvto_lote.concep with bramfc50.concep,;
+          da_mvto_lote.cont_doc with bramfc50.cont_doc,;
+          da_mvto_lote.juegoiva with bramfc50.juegoiva
+
+        * AGREGADO 2003/12/09  A.G.N.
+        replace da_mvto_lote.civa_ant with bramfc50.civa_ant, da_mvto_lote.ctoiva with bramfc50.ctoiva
+        replace da_mvto_lote.reintegro with bramfc50.reintegro,da_mvto_lote.baseret with bramfc50.baseret
+        * FIN AGREGADO 2003/12/09  A.G.N.
+
+      endif  && if !empty(bramfc50.fecha)
+      select bramfc50
+      skip
+    enddo  && do while !eof()
+    select bramfc51
+    go top
+    do while !eof()
+      if !empty(bramfc51.fecha)
+        select da_cargo_tabla
+        append blank
+        replace da_cargo_tabla.i1 with bramfc51.i1
+        replace da_cargo_tabla.i2 with bramfc51.i2,da_cargo_tabla.fecha with bramfc51.fecha
+      endif
+      select bramfc51
+      skip
+    enddo
+    select bramfc52
+    go top
+    do while !eof()
+      if !empty(bramfc52.fecha)
+        select da_cargo_varind
+        append blank
+        replace da_cargo_varind.i2 with bramfc52.i2,da_cargo_varind.fecha with bramfc52.fecha,;
+          da_cargo_varind.cd with bramfc52.cd,da_cargo_varind.in with bramfc52.in,;
+          da_cargo_varind.val with bramfc52.val,da_cargo_varind.coper1 with bramfc52.coper1
+        replace da_cargo_varind.cd1 with bramfc52.cd1,da_cargo_varind.ncd1 with bramfc52.ncd1,;
+          da_cargo_varind.con1 with bramfc52.con1,da_cargo_varind.nat with bramfc52.nat,;
+          da_cargo_varind.lot with iif(alltrim(cLotex)="FAX",cLot,bramfc52.lot),;
+          da_cargo_varind.identif with bramfc52.identif
+      endif  && if !empty(bramfc52.Fecha)
+      select bramfc52
+      skip
+    enddo
+    select bramfc53
+    go top
+    do while !eof()
+      if !empty(bramfc53.fecha)
+        select da_rete_var
+        append blank
+        replace da_rete_var.i3 with bramfc53.i3,da_rete_var.fecha with bramfc53.fecha,;
+          da_rete_var.md with bramfc53.md,da_rete_var.ret with bramfc53.ret,;
+          da_rete_var.val with bramfc53.val,da_rete_var.cedes with bramfc53.cedes,;
+          da_rete_var.nit with bramfc53.nit,da_rete_var.md_mes_ant with bramfc53.md_mes_ant
+      endif  && if !empty(bramfc53.Fecha)
+      select bramfc53
+      skip
+    enddo
+    select da_fecha_mvto
+    set order to tag fecha  && dtos(fec)
+    select bramfc49
+    go top
+    do while !eof()
+      if !empty(bramfc49.fec)
+        select da_fecha_mvto
+        seek dtos(bramfc49.fec)
+        if !found()
+          append blank
+        endif
+        replace da_fecha_mvto.lot with iif(alltrim(cLotex)="FAX",cLot,bramfc49.lot),;
+          da_fecha_mvto.val with da_fecha_mvto.val+bramfc49.val,;
+          da_fecha_mvto.fec with bramfc49.fec
+      endif
+      select bramfc49
+      skip
+    enddo
+  endif  && if lsiga
+
+  endif  && if !lrest
+
+  sele bramfc04
+  repl all regd with 0,vald with 0,regc with 0, valc with 0
+  select bramfc49
+  zap
+  select bramfc58
+  zap
+  select bramfc57
+  zap
+  select bramfc56
+  zap
+  select bramfc54
+  zap
+  select bramfc53
+  zap
+  select bramfc52
+  zap
+  select bramfc51
+  zap
+  select da_comenta
+  zap
+  select bramfc50
+  zap
+  select cnotasdebito
+  zap
+  wait windows "registros borrados" nowait
+  sele memdata
+  repla w__sw with '0',restaura with .f.
+endif  && if messagebox...
+close table all
+clear all
+close all
+clear events
+quit
+
+
+
+
+*       *********************************************************
+*       *                                                         
+*       * _1EH128NKL  ON SELECTION BAR 8 OF POPUP actualizac      
+*       *                                                         
+*       * Procedure Origin:                                       
+*       *                                                         
+*       * From Menu:  MENUR.MPR,            Record:  128          
+*       * Called By:  ON SELECTION BAR 8 OF POPUP actualizac      
+*       * Prompt:     Limpiar historico de impuestos              
+*       * Snippet:    19                                          
+*       *                                                         
+*       *********************************************************
+*
+PROCEDURE _1eh128nkl
+if used("da_icafu")
+  use
+endif
+use da_icafu exclu
+zap
+use
+wait windows "Historico de impuestos eliminado" nowait
+close table all
+
+
+*       *********************************************************
+*       *                                                         
+*       * _1EH128NKM  ON SELECTION BAR 1 OF POPUP listaclint      
+*       *                                                         
+*       * Procedure Origin:                                       
+*       *                                                         
+*       * From Menu:  MENUR.MPR,            Record:  109          
+*       * Called By:  ON SELECTION BAR 1 OF POPUP listaclint      
+*       * Prompt:     Importar desde Archivo                      
+*       * Snippet:    20                                          
+*       *                                                         
+*       *********************************************************
+*
+PROCEDURE _1eh128nkm
+close table all
+if messagebox("Esta opción carga el archivo de Lista Clinton. Asegurese de seleccionar "+;
+    "el archivo texto  que contiene dicha información (actualmente A099.dat)." +chr(13)+;
+    "NADIE DEBE ESTAR TRABAJANDO EN EL PROGRAMA PARA PODER EJECUTAR ESTA OPCION"+chr(13)+;
+    "Desea continuar?",4+32+256,"ATENCION") = 7
+  return
+endif
+select 0
+create cursor cClinton (campo c(90))
+carchivo = getfile('*', 'Archivo Lista Clinton:', 'Aceptar',1)
+if file(carchivo)
+  select cClinton
+  appe from &carchivo sdf
+  if reccoun() != 0
+    select 0
+    if !used("da_clinton")
+      use da_clinton exclus
+    endif
+    select da_clinton
+    zap
+    *delete all
+    select cClinton
+    go top
+    skip
+    do while !eof()
+      select da_clinton
+      append blank
+      replace cedula1 with substr(cClinton->campo,7,11),;
+        nombre with substr(cClinton->campo,18,30),;
+        fec_inclu with ctod(substr(cClinton->campo,58,4)+"/"+substr(cClinton->campo,62,2)+;
+        "/"+substr(cClinton->campo,64,2))
+      select cClinton
+      skip
+    enddo
+    messagebox("Proceso Terminado",64,"ATENCION")
+  endif  && if reccoun() != 0
+else
+  messagebox("El archivo no existe",64,"ATENCION")
+endif
+
+
+
+
+
+*       *********************************************************
+*       *                                                         
+*       * _1EH128NKN  ON SELECTION BAR 2 OF POPUP nuevoeleme      
+*       *                                                         
+*       * Procedure Origin:                                       
+*       *                                                         
+*       * From Menu:  MENUR.MPR,            Record:  124          
+*       * Called By:  ON SELECTION BAR 2 OF POPUP nuevoeleme      
+*       * Prompt:     Recibir                                     
+*       * Snippet:    21                                          
+*       *                                                         
+*       *********************************************************
+*
+PROCEDURE _1eh128nkn
+if messagebox("Va a recibir los archivos de modufax. NADIE DEBE ESTAR TRABAJANDO EN EL "+;
+    "PROGRAMA PARA PODER EJECUTAR ESTA OPCION"+chr(13)+"Desea continuar?",4+32+256,"ATENCION")=7
+  return
+else
+  do form f_clave with "R"
+endif
+
+
+*       *********************************************************
+*       *                                                         
+*       * _1EH128NKO  ON SELECTION BAR 1 OF POPUP enviar          
+*       *                                                         
+*       * Procedure Origin:                                       
+*       *                                                         
+*       * From Menu:  MENUR.MPR,            Record:  119          
+*       * Called By:  ON SELECTION BAR 1 OF POPUP enviar          
+*       * Prompt:     Generar Archivos Modufax                    
+*       * Snippet:    22                                          
+*       *                                                         
+*       *********************************************************
+*
+PROCEDURE _1eh128nko
+if messagebox("Va a generar los archivos de modufax. NADIE DEBE ESTAR TRABAJANDO EN EL "+;
+    "PROGRAMA PARA PODER EJECUTAR ESTA OPCION"+chr(13)+"Desea continuar?",4+32+256,"ATENCION")=7
+  return
+else
+  do form f_clave with "E"
+endif
+
+
+
+*       *********************************************************
+*       *                                                         
+*       * _1EH128NKP  ON SELECTION BAR 4 OF POPUP utilitario      
+*       *                                                         
+*       * Procedure Origin:                                       
+*       *                                                         
+*       * From Menu:  MENUR.MPR,            Record:  135          
+*       * Called By:  ON SELECTION BAR 4 OF POPUP utilitario      
+*       * Prompt:     Reindexar Tablas                            
+*       * Snippet:    23                                          
+*       *                                                         
+*       *********************************************************
+*
+PROCEDURE _1eh128nkp
+if messagebox("Va a regenerar los indices de las tablas del sistema de Pago a Proveedores "+;
+    "NADIE DEBE ESTAR TRABAJANDO EN EL PROGRAMA PARA PODER EJECUTAR ESTA OPCION"+;
+    chr(13)+"Desea continuar?",4+32+256,"ATENCION")=7
+  return
+else
+  =ndxpack(1)
+endif
+
+
+
+*       *********************************************************
+*       *                                                         
+*       * _1EH128NKQ  ON SELECTION BAR 5 OF POPUP utilitario      
+*       *                                                         
+*       * Procedure Origin:                                       
+*       *                                                         
+*       * From Menu:  MENUR.MPR,            Record:  136          
+*       * Called By:  ON SELECTION BAR 5 OF POPUP utilitario      
+*       * Prompt:     Compactar Tablas                            
+*       * Snippet:    24                                          
+*       *                                                         
+*       *********************************************************
+*
+PROCEDURE _1eh128nkq
+if messagebox("Va a compactar las tablas del sistema de Pago a Proveedores "+;
+    "NADIE DEBE ESTAR TRABAJANDO EN EL PROGRAMA PARA PODER EJECUTAR ESTA OPCION"+;
+    chr(13)+"Desea continuar?",4+32+256,"ATENCION")=7
+  return
+else
+  =ndxpack(2)
+endif
+
+
+
+*       *********************************************************
+*       *                                                         
+*       * _1EH128NKR  ON SELECTION BAR 6 OF POPUP utilitario      
+*       *                                                         
+*       * Procedure Origin:                                       
+*       *                                                         
+*       * From Menu:  MENUR.MPR,            Record:  137          
+*       * Called By:  ON SELECTION BAR 6 OF POPUP utilitario      
+*       * Prompt:     Validar Base de Datos                       
+*       * Snippet:    25                                          
+*       *                                                         
+*       *********************************************************
+*
+PROCEDURE _1eh128nkr
+IF MESSAGEBOX("Este proceso valida la Base de Datos (PAGOS.DBC) que se encuentra "+;
+  "dentro de la carpetaPAGADURIA\DATOS. NADIE DEBE ESTAR TRABAJANDO EN EL "+;
+  "PROGRAMA PARA PODER EJECUTAR ESTA OPCION"+CHR(13)+;
+  "Desea continuar?",4+32+256,"ATENCION")=7
+  RETURN
+ELSE
+  close database
+  open database pagos exclusive
+  pack database
+  validate database
+  close all
+  clear events
+endif
+
